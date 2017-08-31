@@ -21,15 +21,11 @@ bool BackGround::init() {
 	bg = Sprite::create("imgs/background3.jpg");
 	bg->setAnchorPoint(Vec2(0, 0));
 	bg->setScale(1.876f, 1.2476f);
-	//Texture2D::TexParams tp = { GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT };
-	//bg->getTexture()->setTexParameters(tp);
-	//auto viewSize = Director::getInstance()->getVisibleSize();
-	//bg->setTextureRect(Rect(0, 0, viewSize.width, viewSize.height));
+
 	addChild(bg);
 	addHud();
-	//addEdges();
 	addPaddle2();
-	//scheduleUpdate();
+
 	return true;
 }
 
@@ -356,10 +352,3 @@ void BackGround::addPaddle2() {
 	addChild(paddle2_3);
 	addChild(paddle2_4);
 }
-//void BackGround::update(float f) {
-//	Node::update(f);
-//	auto rect = bg->getTextureRect();
-//	rect.origin.x += 100.0f * f;
-//	rect.origin.y += 100.0f * f;
-//	bg->setTextureRect(rect);
-//}

@@ -25,6 +25,7 @@ bool DBLevel::initWithLevelData(LevelData leveldata) {
 		return false;
 	}
 	_levelData = leveldata;
+	//获取关卡选择信息，响应按钮选择
 	switch (leveldata.levelS)
 	{
 	case 1: initLevel01BrickLayout(); break;
@@ -40,6 +41,8 @@ bool DBLevel::initWithLevelData(LevelData leveldata) {
 	return true;
 }
 
+
+//关卡设计，设置砖块位置
 void DBLevel::initLevel01BrickLayout() {
 	int space = 10;
 		for (int row = 0; row < 2; row++) {
@@ -173,7 +176,7 @@ void DBLevel::initLevel01BrickLayout() {
 			this->addChild(goal2);
 		}
 }
-
+//设置不同关卡
 void DBLevel::initLevel02BrickLayout() {
 	int space = 10;
 

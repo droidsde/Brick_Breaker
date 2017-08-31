@@ -7,7 +7,7 @@
 
 EndScene::EndScene() {}
 EndScene::~EndScene() {}
-
+//结束场景设计
 Scene * EndScene::createScene()
 {
 	Scene* scene = Scene::create();

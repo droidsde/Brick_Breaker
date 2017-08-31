@@ -9,15 +9,17 @@ using namespace cocostudio::timeline;
 HelloWorld::~HelloWorld() {
 	this->removeAllChildren();
 }
+//游戏主场景
 Scene* HelloWorld::createScene()
 {
+	//创建场景，初始化物理引擎
     auto scene = Scene::createWithPhysics();
-
 	auto pWorld = scene->getPhysicsWorld();
+	//设置重力
 	pWorld->setGravity(Vec2(0, -1));
-
+	//创建场景
     auto layer = HelloWorld::create();
-
+	//添加图层
     scene->addChild(layer);
 
     return scene;
@@ -28,19 +30,23 @@ bool HelloWorld::init()
     {
         return false;
     }
+	//设置背景音乐
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/gameplay_1.mp3");
+	//获取屏幕尺寸
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	_visibleSize = visibleSize;
-
+	//加载UI
 	initUI();
 	initLevelDataList();
-
+	//设置开始按钮图标
 	gameStart("imgs/go.png");
 	_scoreData = new ScoreData();
 	_scoreStagy = new ScoreStragy();
+	//初始化游戏场景
 	newGame();
 
 	gameStart("imgs/go.png");
+	//开始主循环
 	scheduleUpdate();
     return true;
 }
@@ -48,13 +54,13 @@ void HelloWorld::initLevelDataList()
 {
 }
 void HelloWorld::update(float dt) {
+	//设置计分计时界面
 	_timeSec++;
-
 	_scoreText->set_text(_scoreData->score);
 	_timeText ->set_text(_timeSec / 100);
 	_restBall   ->set_text(life);
 	_levelText->set_text(_nowLevel);
-
+	//失败判定
 	if (_ball->getPositionY() < 0) {
 		if (life - 1) {
 			gameStart("imgs/Lost_ball.png");
@@ -62,6 +68,7 @@ void HelloWorld::update(float dt) {
 			addBall(Vec2(_paddle->getPositionX(), 30));
 			life--;
 		}
+		//重新开始判定
 		else {
 			_nowLevel--;
 			_nowLevelLayer->removeFromParent();
@@ -69,6 +76,7 @@ void HelloWorld::update(float dt) {
 			gameStart("imgs/tryagain.png");
 		}
 	}
+	//记录分数
 	if (!goal) {
 		fillChart();
 
@@ -82,7 +90,7 @@ void HelloWorld::update(float dt) {
 		nextLevel();
 	}
 }
-
+//设置计分板
 void HelloWorld::fillChart() {
 
 	UserDefault::getInstance()->setIntegerForKey(StringUtils::format("%s%d", NOW_SORE, 0).c_str(), _scoreData->score);
@@ -129,12 +137,12 @@ void HelloWorld::onEnter()
 	}
 	this->scheduleUpdate();
 }
+
 void HelloWorld::onExit()
 {
 	this->unscheduleUpdate();
 	Layer::onExit();
-	//removeAllChildren();
-	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+
 }
 void HelloWorld::initUI() {
 	addBg();
@@ -378,16 +386,16 @@ bool HelloWorld::onContactBegin(const PhysicsContact& contact)
 	return true;
 }
 bool HelloWorld::onContactPreSlove(const PhysicsContact& contact) {
-	//log("presolved");
+
 	return true;
 }
 bool HelloWorld::onContactPostSolve(const PhysicsContact& contact){
 
-		//log("onContactPostSolve");
-		return true;
+
+    return true;
 };
 bool HelloWorld::onContactSeparate(const PhysicsContact& contact) {
-	//log("onContactSeperate");
+
 	return false;
 };
 
@@ -396,7 +404,6 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
 	{
 	case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
-		//this->getChildByTag(101)->removeFromParent();
 		break;
 	}
 }
