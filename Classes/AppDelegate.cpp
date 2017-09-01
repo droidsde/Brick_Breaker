@@ -46,7 +46,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     return true;
 }
-
+//音乐设置
 void AppDelegate::applicationDidEnterBackground() {
 	CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
     Director::getInstance()->stopAnimation();
