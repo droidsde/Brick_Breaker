@@ -5,6 +5,7 @@
 #include "HelloWorldScene.h"
 #include "StartScene.h"
 #include "StartChart.h"
+#include "Options.h"
 #include "SimpleAudioEngine.h"
 
 PauseBox::PauseBox() {
@@ -58,16 +59,25 @@ void PauseBox::resumeCallback(Ref* sender, cocos2d::ui::Widget::TouchEventType t
 }
 
 void PauseBox::optionCallback(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+	auto visibleSize = Director::getInstance()->getVisibleSize();
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/sndMenuButtonRollover.mp3");
-	Director::getInstance()->replaceScene(TransitionProgressRadialCW::create(0.5, StartChart::createScene()));
+
+	RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
+	renderTexture->begin();
+	this->getParent()->visit();
+	renderTexture->end();
+
+	Director::getInstance()->pushScene(Options::createScene(renderTexture));
 }
 
 void PauseBox::restartCallback(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/sndMenuButtonRollover.mp3");
+	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 	Director::getInstance()->replaceScene(TransitionProgressRadialCW::create(0.5, HelloWorld::createScene()));
 }
 
 void PauseBox::menuCallback(Ref* sender, cocos2d::ui::Widget::TouchEventType type) {
+	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/sndMenuButtonRollover.mp3");
 	Director::getInstance()->replaceScene(TransitionProgressRadialCW::create(0.5, StartScene::createScene()));
 }

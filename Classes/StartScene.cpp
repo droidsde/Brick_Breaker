@@ -10,7 +10,6 @@
 
 StartScene::StartScene() {}
 StartScene::~StartScene() {
-
 }
 
 Scene * StartScene::createScene()//RenderTexture *rt

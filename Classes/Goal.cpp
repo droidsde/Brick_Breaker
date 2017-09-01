@@ -82,7 +82,6 @@ bool Gift::init() {
 	return true;
 }
 
-
 Bomb::Bomb()
 {
 }
@@ -91,6 +90,27 @@ Bomb::~Bomb()
 }
 bool Bomb::init() {
 	Sprite::initWithFile("imgs/bomb.png");
+
+	auto playerPhysicsBody = PhysicsBody::createBox(getContentSize());
+	this->setPhysicsBody(playerPhysicsBody);
+	playerPhysicsBody->getShape(0)->setFriction(0);
+	playerPhysicsBody->getShape(0)->setRestitution(1.0f);
+	return true;
+}
+
+
+Candy::Candy()
+{
+}
+Candy::~Candy()
+{
+}
+bool Candy::init()
+{
+	if (!Sprite::init()) {
+		return false;
+	}
+	Sprite::initWithFile("imgs/candy.png");
 
 	auto playerPhysicsBody = PhysicsBody::createBox(getContentSize());
 	this->setPhysicsBody(playerPhysicsBody);

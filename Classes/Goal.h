@@ -46,4 +46,13 @@ public:
 	CREATE_FUNC(Bomb);
 };
 
+class Candy:public Sprite
+{
+public:
+	Candy();
+	~Candy();
+	virtual bool init();
+	CREATE_FUNC(Candy);
+};
+
 #endif

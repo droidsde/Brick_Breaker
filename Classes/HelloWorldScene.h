@@ -15,6 +15,7 @@
 #include "UserData.h"
 #include "ScoreData.h"
 #include "ScoreStrategy.h"
+#include "EndScene.h"
 
 using namespace cocos2d;
 
@@ -69,6 +70,8 @@ public:
 	void addCharts();
 	void addPauseBox();
 	void addScoreText();
+
+	void addParticleSystem(Sprite * spriteB, int i);
 
 	bool onTouchBegan(Touch * touch, Event * event);
 	void onTouchMoved(Touch * touch, Event * event);

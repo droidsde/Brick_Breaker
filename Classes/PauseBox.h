@@ -12,6 +12,7 @@ public:
 	virtual ~PauseBox();
 	CREATE_FUNC(PauseBox);
 
+	/*void onExit();*/
 
 	virtual bool init();
 	static Scene* PauseBox::createScene(RenderTexture *);

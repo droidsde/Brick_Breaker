@@ -2,6 +2,7 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "SimpleAudioEngine.h"
+#include "Goal.h"
 
 USING_NS_CC;
 using namespace cocostudio::timeline;
@@ -9,17 +10,15 @@ using namespace cocostudio::timeline;
 HelloWorld::~HelloWorld() {
 	this->removeAllChildren();
 }
-//游戏主场景
 Scene* HelloWorld::createScene()
 {
-	//创建场景，初始化物理引擎
     auto scene = Scene::createWithPhysics();
+
 	auto pWorld = scene->getPhysicsWorld();
-	//设置重力
 	pWorld->setGravity(Vec2(0, -1));
-	//创建场景
+
     auto layer = HelloWorld::create();
-	//添加图层
+
     scene->addChild(layer);
 
     return scene;
@@ -30,23 +29,22 @@ bool HelloWorld::init()
     {
         return false;
     }
-	//设置背景音乐
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/gameplay_1.mp3");
-	//获取屏幕尺寸
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	_visibleSize = visibleSize;
-	//加载UI
+
 	initUI();
 	initLevelDataList();
-	//设置开始按钮图标
+	auto snow = ParticleRain::create();
+	snow->setPosition(Vec2(visibleSize.width / 2, visibleSize.height));
+	addChild(snow);
+
 	gameStart("imgs/go.png");
 	_scoreData = new ScoreData();
 	_scoreStagy = new ScoreStragy();
-	//初始化游戏场景
 	newGame();
 
 	gameStart("imgs/go.png");
-	//开始主循环
 	scheduleUpdate();
     return true;
 }
@@ -54,13 +52,13 @@ void HelloWorld::initLevelDataList()
 {
 }
 void HelloWorld::update(float dt) {
-	//设置计分计时界面
 	_timeSec++;
+
 	_scoreText->set_text(_scoreData->score);
 	_timeText ->set_text(_timeSec / 100);
 	_restBall   ->set_text(life);
 	_levelText->set_text(_nowLevel);
-	//失败判定
+
 	if (_ball->getPositionY() < 0) {
 		if (life - 1) {
 			gameStart("imgs/Lost_ball.png");
@@ -68,7 +66,6 @@ void HelloWorld::update(float dt) {
 			addBall(Vec2(_paddle->getPositionX(), 30));
 			life--;
 		}
-		//重新开始判定
 		else {
 			_nowLevel--;
 			_nowLevelLayer->removeFromParent();
@@ -76,7 +73,6 @@ void HelloWorld::update(float dt) {
 			gameStart("imgs/tryagain.png");
 		}
 	}
-	//记录分数
 	if (!goal) {
 		fillChart();
 
@@ -111,7 +107,7 @@ void HelloWorld::fillChart() {
 			rank++;
 		}
 }
-//监视屏幕以及按键
+
 void HelloWorld::onEnter()
 {
 	Layer::onEnter();
@@ -137,18 +133,19 @@ void HelloWorld::onEnter()
 	}
 	this->scheduleUpdate();
 }
-
 void HelloWorld::onExit()
 {
 	this->unscheduleUpdate();
 	Layer::onExit();
-
+	//removeAllChildren();
+	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+	
 }
 void HelloWorld::initUI() {
 	addBg();
 	addScoreText();
 }
-//初始化元素位置
+
 void HelloWorld::gameStart(std::string img) {
 	auto go = Sprite::create(img);
 	go->setAnchorPoint(Vec2(0.5, 0.5));
@@ -216,6 +213,9 @@ void HelloWorld::nextLevel()
 	life = 3;
 	goal = 3;
 	_nowLevel++;
+	if (_nowLevel == 10) {
+		Director::getInstance()->replaceScene(EndScene::createScene());
+	}
 	LevelData leveldata = {};
 	leveldata.levelS = _nowLevel;
 	leveldata.columns = 10;
@@ -271,6 +271,30 @@ void HelloWorld::addScoreText() {
 	addChild(_levelText, 10);
 }
 
+void HelloWorld::addParticleSystem(Sprite* spriteB, int i) {
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	switch (i)
+	{
+	case 1:
+		ParticleSystemQuad* particleSystem1;
+		particleSystem1 = ParticleSystemQuad::create("plists/redstars.plist"); 
+		particleSystem1->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
+		this->addChild(particleSystem1);
+		break;
+	case 2:
+		ParticleSystemQuad* particleSystem2;
+		particleSystem2 = ParticleSystemQuad::create("plists/explode.plist"); 
+		particleSystem2->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
+		this->addChild(particleSystem2); 
+		break;
+	case 3:
+		ParticleSystemQuad* particleSystem3;
+		particleSystem3 = ParticleSystemQuad::create("plists/stars.plist");
+		particleSystem3->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
+		this->addChild(particleSystem3); break;
+	}
+}
+
 bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 {
     Point touchLocation = this->convertTouchToNodeSpace(touch);
@@ -288,6 +312,9 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 void HelloWorld::onTouchMoved(Touch* touch, Event* event)
 {
 	Point touchLocation = this->convertTouchToNodeSpace(touch);
+	//if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
+	//	this->selectSpriteForTouch(touchLocation);
+	//}
 
 	Sprite* pd = (Sprite*)this->getChildByTag(tag_paddle);
 	//if (pd->getBoundingBox().containsPoint(touch->getLocation())) {
@@ -317,29 +344,27 @@ bool HelloWorld::onContactBegin(const PhysicsContact& contact)
 		{
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/sndBallBounce.mp3");
 		}
-		if (tagA == 1 && tagB == 20 || tagB == 20 && tagB == 1)
+		if (tagA == 1 && tagB == 20 || tagA == 20 && tagB == 1)
 		{
-			auto * particleSystem2 = ParticleSystemQuad::create("plists/explode.plist");
-			particleSystem2->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
-			this->addChild(particleSystem2);
+			//particleSystem2->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
+			//this->addChild(particleSystem2);
+			addParticleSystem(spriteB, 2);
 			this->scorePlus("imgs/10.png", Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
 			spriteB->removeFromParent();
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/collect_03.mp3");
 		}
-		if (tagA == 1 && tagB == 2 || tagB == 2 && tagB == 1)
+		if (tagA == 1 && tagB == 2 || tagA == 2 && tagB == 1)
 		{
-			auto * particleSystem1 = ParticleSystemQuad::create("plists/redstars.plist");
-			particleSystem1->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
-			this->addChild(particleSystem1);
+			//particleSystem1->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
+			//this->addChild(particleSystem1);
+			addParticleSystem(spriteB, 1);
 			this->scorePlus("imgs/10.png", Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
 			spriteB->removeFromParent();
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/collect_03.mp3");
 		}
 		if (tagA == 1 && tagB == 3 || tagA == 3 && tagB == 1)
 		{
-			auto * particleSystem = ParticleSystemQuad::create("plists/stars.plist");
-			particleSystem->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
-			this->addChild(particleSystem);
+			addParticleSystem(spriteB, 3);
 			this->scorePlus("imgs/starplus.png", Vec2(480, spriteB->getPosition().y + visibleSize.height / 2 - 50));
 			this->scorePlus("imgs/1000.png", Vec2(480, spriteB->getPosition().y + visibleSize.height / 2 + 50));
 			spriteB->removeFromParent();
@@ -347,19 +372,16 @@ bool HelloWorld::onContactBegin(const PhysicsContact& contact)
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/collect_01.mp3");
 		}
 		if (tagA == 1 && tagB == 3000 || tagA == 3000 && tagB == 1) {
-			auto * particleSystem2 = ParticleSystemQuad::create("plists/explode.plist");
-			particleSystem2->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
-			this->addChild(particleSystem2);
+			addParticleSystem(spriteB, 3);
 			spriteB->removeFromParent();
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/collect_05.mp3");
-
 			this->scorePlus("imgs/gift.png", Vec2(480, 320));
 			this->scorePlus("imgs/3000.png", Vec2(480, 370));
 		}
 		if (tagA == 1 && tagB == 1000 || tagA == 1000 && tagB == 1) {
-			auto * particleSystem2 = ParticleSystemQuad::create("plists/explode.plist");
-			particleSystem2->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
-			this->addChild(particleSystem2);
+			//particleSystem2->setPosition(Vec2(spriteB->getPosition().x + 70, spriteB->getPosition().y + visibleSize.height / 2 - 50));
+			//this->addChild(particleSystem2);
+			addParticleSystem(spriteB, 2);
 			spriteB->removeFromParent();
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/bomb_02.mp3");
 
@@ -383,16 +405,16 @@ bool HelloWorld::onContactBegin(const PhysicsContact& contact)
 	return true;
 }
 bool HelloWorld::onContactPreSlove(const PhysicsContact& contact) {
-
+	//log("presolved");
 	return true;
 }
 bool HelloWorld::onContactPostSolve(const PhysicsContact& contact){
 
-
-    return true;
+		//log("onContactPostSolve");
+		return true;
 };
 bool HelloWorld::onContactSeparate(const PhysicsContact& contact) {
-
+	//log("onContactSeperate");
 	return false;
 };
 
@@ -401,6 +423,7 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
 	{
 	case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+		//this->getChildByTag(101)->removeFromParent();
 		break;
 	}
 }

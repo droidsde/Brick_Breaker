@@ -29,7 +29,6 @@ bool ChoiceScene::init()
 
 	auto choiceScene = CSLoader::createNode("ChoiceScene.csb");
 
-	//获得按钮控件
 	auto l1Btn = static_cast<ui::Button*>(choiceScene->getChildByName("level1"));
 	auto l2Btn = static_cast<ui::Button*>(choiceScene->getChildByName("level2"));
 	auto l3Btn = static_cast<ui::Button*>(choiceScene->getChildByName("level3"));
@@ -55,7 +54,6 @@ bool ChoiceScene::init()
 	addChild(choiceScene);
 }
 
-//按钮回调，设置点击效果
 void ChoiceScene::gotoLevel1(Ref * sender, cocos2d::ui::Widget::TouchEventType type)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/sndMenuButtonRollover.mp3");

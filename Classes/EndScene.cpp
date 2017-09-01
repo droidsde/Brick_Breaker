@@ -7,7 +7,7 @@
 
 EndScene::EndScene() {}
 EndScene::~EndScene() {}
-//结束场景设计
+
 Scene * EndScene::createScene()
 {
 	Scene* scene = Scene::create();
@@ -21,6 +21,9 @@ bool EndScene::init()
 	if (!Layer::init()) {
 		return false;
 	}
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/winmusic.mp3");
+
 	auto EndScene = CSLoader::createNode("EndScene.csb");
 
 	auto viewSize = Director::getInstance()->getVisibleSize();

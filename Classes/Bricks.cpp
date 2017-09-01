@@ -10,7 +10,7 @@ bool Brick1::init() {
 	Sprite::initWithFile("imgs/brick1.png");
 
 	this ->setScale(0.5, 0.5);
-	//设置物理属性
+
 	auto playerPhysicsBody = PhysicsBody::createBox(getContentSize());
 	this -> setPhysicsBody(playerPhysicsBody);
 	playerPhysicsBody->getShape(0)->setFriction(0);
@@ -23,7 +23,7 @@ bool Brick1::init() {
 	this->getPhysicsBody()->setDynamic(false);
 	return true;
 }
-//设置不同种类的砖块
+
 Brick2::~Brick2() {
 
 }

@@ -11,7 +11,6 @@ ChartsScene::~ChartsScene()
 {
 }
 
-//创建场景
 Scene* ChartsScene::createScene(RenderTexture *rt) {
 	Scene* scene = Scene::create();
 	ChartsScene* layer = ChartsScene::create();
@@ -25,6 +24,24 @@ Scene* ChartsScene::createScene(RenderTexture *rt) {
 	return scene;
 }
 
+//ChartsScene * ChartsScene::getInstance()
+//{
+//	if (_instance == nullptr) {
+//		_instance == new ChartsScene();
+//	}
+//	return _instance;
+//}
+//
+//void ChartsScene::getNowScore(int score)
+//{
+//	_nowScore = score;
+//}
+//
+//void ChartsScene::getSpendTime(int time)
+//{
+//	_spendTime = time;
+//}
+
 void ChartsScene::gameStart(std::string img) {
 	auto go = Sprite::create(img);
 	go->setAnchorPoint(Vec2(0.5, 0.5));
@@ -34,7 +51,7 @@ void ChartsScene::gameStart(std::string img) {
 	addChild(go);
 	go->runAction(Sequence::create(Spawn::create(FadeIn::create(1), ScaleTo::create(1, 1), NULL), RemoveSelf::create(true), NULL));
 }
-//主程序
+
 bool ChartsScene::init() {
 	if (!Layer::init()) {
 		return false;
@@ -65,10 +82,15 @@ bool ChartsScene::init() {
 	listener->setSwallowTouches(true);
 	charts->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+
+	auto snow = ParticleFireworks::create();
+	snow->setPosition(Vec2(3 * viewSize.width / 4, 3* viewSize.height / 4));
+	addChild(snow);
+
 	addChild(charts);
 	return true;
 }
-//返回按钮回调
+
 void ChartsScene::backBtnCallback(Ref* sender, cocos2d::ui::Widget::TouchEventType type)
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/sndMenuButtonClick.mp3");

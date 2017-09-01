@@ -13,7 +13,8 @@ public:
 	virtual bool init();
 	void backBtnCallback(Ref* sender, cocos2d::ui::Widget::TouchEventType type);
 	static Scene* createScene(RenderTexture *);
-
+	//static void getNowScore(int score);
+	//static void getSpendTime(int time);
 protected:
 	ui::TextAtlas* score;
 	ui::TextAtlas* time;

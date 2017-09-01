@@ -17,6 +17,6 @@ public:
 	void addHud();
 	void addEdges();
 	void addPaddle2();
-
+	//virtual void update(float f);
 };
 #endif // _APP_DELEGATE_H_
