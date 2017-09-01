@@ -31,7 +31,7 @@ bool StartChart::init()
 	_returnBtn->addTouchEventListener(CC_CALLBACK_2(StartChart::gotoMainScene, this));
 
 	addChild(chartsScene);
-
+	//œ‘ æ∑÷ ˝
 	for (int i = 0; i < 5; i++) {
 		int score = UserDefault::getInstance()->getIntegerForKey(StringUtils::format("%s%d", RANK_SORE, i).c_str(), UserDefault::getInstance()->getIntegerForKey(StringUtils::format("%s%d", NOW_SORE, i).c_str()));
 		auto row = createCharts(i, score);

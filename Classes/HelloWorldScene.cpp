@@ -90,7 +90,7 @@ void HelloWorld::update(float dt) {
 		nextLevel();
 	}
 }
-//设置计分板
+
 void HelloWorld::fillChart() {
 
 	UserDefault::getInstance()->setIntegerForKey(StringUtils::format("%s%d", NOW_SORE, 0).c_str(), _scoreData->score);
@@ -111,7 +111,7 @@ void HelloWorld::fillChart() {
 			rank++;
 		}
 }
-
+//监视屏幕以及按键
 void HelloWorld::onEnter()
 {
 	Layer::onEnter();
@@ -148,7 +148,7 @@ void HelloWorld::initUI() {
 	addBg();
 	addScoreText();
 }
-
+//初始化元素位置
 void HelloWorld::gameStart(std::string img) {
 	auto go = Sprite::create(img);
 	go->setAnchorPoint(Vec2(0.5, 0.5));
@@ -288,9 +288,6 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 void HelloWorld::onTouchMoved(Touch* touch, Event* event)
 {
 	Point touchLocation = this->convertTouchToNodeSpace(touch);
-	//if (event->getCurrentTarget()->getBoundingBox().containsPoint(touch->getLocation())) {
-	//	this->selectSpriteForTouch(touchLocation);
-	//}
 
 	Sprite* pd = (Sprite*)this->getChildByTag(tag_paddle);
 	//if (pd->getBoundingBox().containsPoint(touch->getLocation())) {
